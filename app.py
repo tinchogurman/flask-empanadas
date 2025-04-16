@@ -1,7 +1,6 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 import sqlite3
 import os
-import send_file
 
 app = Flask(__name__)
 
