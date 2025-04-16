@@ -10,17 +10,21 @@ print("📍 Ruta real del archivo SQLite:", DB_PATH)
 
 # Crear tabla si no existe
 def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS EmpanadaFlavors (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            flavor TEXT UNIQUE,
-            count INTEGER
-        )
-    ''')
-    conn.commit()
-    conn.close()
+    if not os.path.exists(DB_PATH):  # Solo crea si no existe
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS EmpanadaFlavors (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                flavor TEXT UNIQUE,
+                count INTEGER
+            )
+        ''')
+        conn.commit()
+        conn.close()
+        print("📁 Base creada.")
+    else:
+        print("📁 Base ya existe, no se toca.")
 
 init_db()
 
