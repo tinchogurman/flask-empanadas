@@ -71,3 +71,12 @@ if __name__ == '__main__':
 @app.route('/download-db')
 def download_db():
     return send_file(DB_PATH, as_attachment=True)
+
+@app.route('/reset-db')
+def reset_db():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM EmpanadaFlavors")
+    conn.commit()
+    conn.close()
+    return "🧹 All data deleted. Ready for fresh voting!"

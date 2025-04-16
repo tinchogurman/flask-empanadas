@@ -2,19 +2,20 @@
 <html>
 <head>
     <title>Empanada Voting</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Tipografía estilo artesanal -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Choose your favorite!</h1>
-        <p>Click on one to vote:</p>
+        <h1>EVE’S EMPANADAS</h1>
+        <p>Select your favorite by clicking an image:</p>
 
-        <div class="gallery">
+        <div class="gallery-row">
             {% for img in images %}
-            <form method="POST" action="/submit" class="photo">
+            <form method="POST" action="/submit" class="photo-form">
                 <input type="hidden" name="flavor" value="{{ img.rsplit('.', 1)[0].replace('-', ' ') }}">
-                <input type="image" src="{{ url_for('static', filename='images/' + img) }}" alt="Vote" />
+                <input type="image" src="{{ url_for('static', filename='images/' + img) }}" alt="Empanada" />
             </form>
             {% endfor %}
         </div>
