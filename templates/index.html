@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Empanada Voting</title>
-    <!-- Tipografía estilo artesanal -->
+    <title>Let's vote!</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
         <h1>EVE’S EMPANADAS</h1>
-        <p>Select your favorite!</p>
-		<hr class="decorative-line">
+        <p>Choose your favorite!</p>
+        <hr class="decorative-line">
 
         <div class="gallery-row">
             {% for img in images %}
