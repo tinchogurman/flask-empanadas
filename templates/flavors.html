@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submitted Flavors</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>The winners</h1>
+        {% if flavors %}
+            <ul>
+            {% for flavor, count in flavors %}
+                <li>{{ flavor }} ({{ count }})</li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No flavors submitted yet.</p>
+        {% endif %}
+        <a href="/">Back to Home</a>
+    </div>
+</body>
+</html>

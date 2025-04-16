@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Empanada Preference Survey</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1> EVE'S Best Empanadas Survey </h1>
+        <p>EVE'S ORIGINAL EMAPANADAS</p>
+
+        <form method="POST" action="/submit">
+            <select name="flavor" required>
+				<option disabled selected value="">-- Select your favorite flavor --</option>
+				<option>Beyond Beef</option>
+				<option>Mushrooms & Leeks</option>
+				<option>Gruyere Cheese & Onions</option>
+				<option>Spicy Corn</option>
+				<option>Spinach & Feta</option>
+			</select>
+            <input type="submit" value="Submit">
+        </form>
+	<div class="gallery">
+    {% for img in images %}
+        <div class="photo">
+            <img src="{{ url_for('static', filename='images/' + img) }}" alt="Empanada" />
+        </div>
+    {% endfor %}
+</div>
+
+    </div>
+</body>
+</html>
