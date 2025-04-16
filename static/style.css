@@ -43,15 +43,10 @@ p {
     padding: 20px 0;
 }
 
-.photo-form {
-    width: auto;
-}
-
 .photo-form img {
     width: 120px;
     height: 120px;
     object-fit: cover;
-    aspect-ratio: 1 / 1;
     border-radius: 12px;
     border: 3px solid white;
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
