@@ -4,13 +4,13 @@ import os
 
 app = Flask(__name__)
 
-# Ruta al archivo .db
+# Ruta a la base de datos
 DB_PATH = os.path.join(os.path.dirname(__file__), 'empanadas.db')
 print("📍 Ruta real del archivo SQLite:", DB_PATH)
 
-# Crear tabla si no existe
+# Crear base si no existe
 def init_db():
-    if not os.path.exists(DB_PATH):  # Solo crea si no existe
+    if not os.path.exists(DB_PATH):
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute('''
@@ -28,14 +28,19 @@ def init_db():
 
 init_db()
 
-# Página principal con formulario y galería
+# 🏠 Nueva página principal
+@app.route('/home')
+def home():
+    return render_template('home.html')
+
+# Página de votación
 @app.route('/')
 def index():
     image_folder = os.path.join(app.static_folder, 'images')
     images = [f for f in os.listdir(image_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
     return render_template('index.html', images=images)
 
-# Proceso del formulario
+# Envío del voto
 @app.route('/submit', methods=['POST'])
 def submit():
     flavor = request.form['flavor'].strip()
@@ -54,12 +59,12 @@ def submit():
         cursor.execute("INSERT INTO EmpanadaFlavors (flavor, count) VALUES (?, ?)", (flavor, 1))
         print(f"🟩 Insertado nuevo sabor: {flavor}")
     
-    conn.commit()  # 🔥 Acá estaba el problema
+    conn.commit()
     conn.close()
 
     return render_template('result.html', flavor=flavor)
 
-# Ver todos los sabores registrados
+# Ver los sabores registrados
 @app.route('/flavors')
 def flavors():
     conn = sqlite3.connect(DB_PATH)
@@ -69,13 +74,12 @@ def flavors():
     conn.close()
     return render_template('flavors.html', flavors=data)
 
-if __name__ == '__main__':
-    app.run(debug=True)
-
+# Descargar la base de datos
 @app.route('/download-db')
 def download_db():
     return send_file(DB_PATH, as_attachment=True)
 
+# Reiniciar la base de datos manualmente
 @app.route('/reset-db')
 def reset_db():
     conn = sqlite3.connect(DB_PATH)
@@ -83,4 +87,7 @@ def reset_db():
     cursor.execute("DELETE FROM EmpanadaFlavors")
     conn.commit()
     conn.close()
-    return "🧹 All data deleted. Ready for fresh voting!"
+    return "🥟 La base de datos ha sido reiniciada exitosamente."
+
+if __name__ == '__main__':
+    app.run(debug=True)
