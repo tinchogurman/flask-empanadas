@@ -8,7 +8,8 @@ DB_PATH = os.path.join(os.path.dirname(__file__), 'empanadas.db')
 print("📍 Ruta real del archivo SQLite:", DB_PATH)
 
 def init_db():
-    if not os.path.exists(DB_PATH):
+    if not os.path.isfile(DB_PATH):
+        print("📁 No existe empanadas.db → creando base y tabla...")
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute('''
@@ -20,9 +21,9 @@ def init_db():
         ''')
         conn.commit()
         conn.close()
-        print("📁 Base creada.")
     else:
-        print("📁 Base ya existe, no se toca.")
+        print("✅ Base de datos ya existe → no se modifica.")
+
 
 init_db()
 
