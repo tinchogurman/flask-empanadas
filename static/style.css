@@ -123,8 +123,8 @@ a {
 }
 
 .gallery-home img {
-    width: 220px;
-    height: 220px;
+    width: 420px;
+    height: 420px;
     object-fit: cover;
     border-radius: 14px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -150,6 +150,24 @@ a {
 }
 
 .home-button:hover {
+    background-color: white;
+    color: #6bbbe0;
+}
+
+.instagram-link {
+    display: inline-block;
+    margin-top: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+    border: 2px solid white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.instagram-link:hover {
     background-color: white;
     color: #6bbbe0;
 }
