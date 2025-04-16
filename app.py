@@ -4,8 +4,9 @@ import os
 
 app = Flask(__name__)
 
-# Ruta al archivo de base de datos
+# Ruta al archivo .db
 DB_PATH = os.path.join(os.path.dirname(__file__), 'empanadas.db')
+print("📍 Ruta real del archivo SQLite:", DB_PATH)
 
 # Crear tabla si no existe
 def init_db():
@@ -23,15 +24,18 @@ def init_db():
 
 init_db()
 
+# Página principal con formulario y galería
 @app.route('/')
 def index():
     image_folder = os.path.join(app.static_folder, 'images')
     images = [f for f in os.listdir(image_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
     return render_template('index.html', images=images)
 
+# Proceso del formulario
 @app.route('/submit', methods=['POST'])
 def submit():
     flavor = request.form['flavor'].strip()
+    print("✨ Recibido flavor:", flavor)
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -41,14 +45,17 @@ def submit():
 
     if row:
         cursor.execute("UPDATE EmpanadaFlavors SET count = count + 1 WHERE flavor = ?", (flavor,))
+        print(f"🟦 Actualizado {flavor}")
     else:
         cursor.execute("INSERT INTO EmpanadaFlavors (flavor, count) VALUES (?, ?)", (flavor, 1))
+        print(f"🟩 Insertado nuevo sabor: {flavor}")
     
-    conn.commit()
+    conn.commit()  # 🔥 Acá estaba el problema
     conn.close()
 
     return render_template('result.html', flavor=flavor)
 
+# Ver todos los sabores registrados
 @app.route('/flavors')
 def flavors():
     conn = sqlite3.connect(DB_PATH)
