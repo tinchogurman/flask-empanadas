@@ -1,33 +1,27 @@
 from flask import Flask, render_template, request
-import pyodbc, os
+import sqlite3
+import os
 
 app = Flask(__name__)
 
-server = r'CPC-marti-YGW4P\SQLEXPRESS'
-database = 'Prueba'
-
-conn = pyodbc.connect(
-    'DRIVER={ODBC Driver 17 for SQL Server};'
-    f'SERVER={server};'
-    f'DATABASE={database};'
-    'Trusted_Connection=yes;'
-)
+# Ruta al archivo de base de datos
+DB_PATH = os.path.join(os.path.dirname(__file__), 'empanadas.db')
 
 # Crear tabla si no existe
-cursor = conn.cursor()
-cursor.execute("""
-IF NOT EXISTS (
-    SELECT * FROM sysobjects WHERE name='EmpanadaFlavors' AND xtype='U'
-)
-BEGIN
-    CREATE TABLE EmpanadaFlavors (
-        Id INT IDENTITY(1,1) PRIMARY KEY,
-        Flavor VARCHAR(100) UNIQUE,
-        Count INT
-    )
-END
-""")
-conn.commit()
+def init_db():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS EmpanadaFlavors (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            flavor TEXT UNIQUE,
+            count INTEGER
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+init_db()
 
 @app.route('/')
 def index():
@@ -37,31 +31,32 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    flavor = request.form['flavor'].strip().title()
+    flavor = request.form['flavor'].strip()
 
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    # Verificar si ya existe
-    cursor.execute("SELECT Count FROM EmpanadaFlavors WHERE Flavor = ?", (flavor,))
+
+    cursor.execute("SELECT count FROM EmpanadaFlavors WHERE flavor = ?", (flavor,))
     row = cursor.fetchone()
 
     if row:
-        # Ya existe → actualizar cantidad
-        nueva_cantidad = row[0] + 1
-        cursor.execute("UPDATE EmpanadaFlavors SET Count = ? WHERE Flavor = ?", (nueva_cantidad, flavor))
+        cursor.execute("UPDATE EmpanadaFlavors SET count = count + 1 WHERE flavor = ?", (flavor,))
     else:
-        # Nuevo sabor → insertar
-        cursor.execute("INSERT INTO EmpanadaFlavors (Flavor, Count) VALUES (?, ?)", (flavor, 1))
+        cursor.execute("INSERT INTO EmpanadaFlavors (flavor, count) VALUES (?, ?)", (flavor, 1))
     
     conn.commit()
+    conn.close()
 
     return render_template('result.html', flavor=flavor)
 
 @app.route('/flavors')
 def flavors():
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("SELECT Flavor, Count FROM EmpanadaFlavors ORDER BY Count DESC")
-    flavors_list = cursor.fetchall()
-    return render_template('flavors.html', flavors=flavors_list)
+    cursor.execute("SELECT flavor, count FROM EmpanadaFlavors ORDER BY count DESC")
+    data = cursor.fetchall()
+    conn.close()
+    return render_template('flavors.html', flavors=data)
 
 if __name__ == '__main__':
     app.run(debug=True)
