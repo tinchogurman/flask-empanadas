@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import sqlite3
 import os
+import send_file
 
 app = Flask(__name__)
 
@@ -67,3 +68,7 @@ def flavors():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/download-db')
+def download_db():
+    return send_file(DB_PATH, as_attachment=True)
