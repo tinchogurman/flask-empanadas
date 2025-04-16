@@ -134,3 +134,22 @@ a {
 .gallery-home img:hover {
     transform: scale(1.05);
 }
+
+.home-button {
+    background-color: transparent;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: 2px solid white;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.home-button:hover {
+    background-color: white;
+    color: #6bbbe0;
+}
