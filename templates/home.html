@@ -2,15 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>EVE’S EMPANADAS – Home</title>
+    <title>Welcome to Eve’s Empanadas</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to EVE’S EMPANADAS</h1>
-        <p>Handcrafted empanadas made with love and local ingredients.</p>
-        <p>Visit us at pop-up markets and special events throughout the season!</p>
-        <p><strong>Open:</strong> Saturdays 4PM–8PM 🎶</p>
+        <h1>EVE’S EMPANADAS</h1>
+        <p>Locally made with seasonal ingredients and a lot of love.</p>
+        <p>Find us at your favorite markets and events!</p>
+        <p><strong>Open:</strong> Saturdays 4–8 PM · Music by DJ OJ 🎶</p>
 
-        <hr class="
+        <hr class="decorative-line">
+
+        <a href="/votar" class="vote-button">Vote for your favorite flavor 🥟</a>
+
+        <div class="gallery-home">
+            <img src="{{ url_for('static', filename='images/home/packs.jpg') }}" alt="Packs">
+            <img src="{{ url_for('static', filename='images/home/empanadas-cooked.jpg') }}" alt="Cooked Empanadas">
+            <img src="{{ url_for('static', filename='images/home/single-empanada.jpg') }}" alt="Single Empanada">
+            <img src="{{ url_for('static', filename='images/home/pasta-machine.jpg') }}" alt="Making Dough">
+            <img src="{{ url_for('static', filename='images/home/woodcut-art.jpg') }}" alt="Artisanal Art">
+        </div>
+    </div>
+</body>
+</html>
