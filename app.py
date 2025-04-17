@@ -36,9 +36,10 @@ def home():
 # 🗳 Página de votación ahora en /votar
 @app.route('/votar')
 def votar():
-    image_folder = os.path.join(app.static_folder, 'images')
+    image_folder = os.path.join(app.static_folder, 'images', 'empanadas')
     images = [f for f in os.listdir(image_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
     return render_template('index.html', images=images)
+
 
 @app.route('/submit', methods=['POST'])
 def submit():
