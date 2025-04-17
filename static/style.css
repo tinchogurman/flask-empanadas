@@ -171,3 +171,14 @@ a {
     background-color: white;
     color: #6bbbe0;
 }
+
+.logo-wrapper {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo-wrapper img {
+    width: 120px;
+    height: auto;
+    margin-top: 10px;
+}
