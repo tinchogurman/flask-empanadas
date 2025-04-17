@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, send_file
+from datetime import datetime
 import sqlite3
 import os
 
@@ -68,10 +69,11 @@ def flavors():
     data = cursor.fetchall()
     conn.close()
     return render_template('flavors.html', flavors=data)
-
+    
 @app.route('/download-db')
 def download_db():
-    return send_file(DB_PATH, as_attachment=True)
+    filename = f"empanadas-{datetime.now().strftime('%Y-%m-%d_%H-%M')}.db"
+    return send_file(DB_PATH, as_attachment=True, download_name=filename)
 
 ## @app.route('/reset-db')
 ## def reset_db():
