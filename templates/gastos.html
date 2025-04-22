@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Suppliers & Expenses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Suppliers & Expenses</h1>
+
+        <form method="POST" action="/gastos">
+            <label>Supplier Name:</label>
+            <input type="text" name="supplier" required>
+
+            <label>Description:</label>
+            <input type="text" name="description">
+
+            <label>Amount:</label>
+            <input type="number" name="amount" step="0.01" required>
+
+            <label>Date (optional):</label>
+            <input type="datetime-local" name="date">
+
+            <button type="submit">Add Expense</button>
+        </form>
+
+        <hr>
+
+        <h2>Expense History</h2>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Supplier</th>
+                <th>Description</th>
+                <th>Amount</th>
+            </tr>
+            {% for row in gastos %}
+            <tr>
+                <td>{{ row[4] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>${{ "%.2f"|format(row[3]) }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <a href="/" class="home-button">← Back to Home</a>
+    </div>
+</body>
+</html>
