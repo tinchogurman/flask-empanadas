@@ -24,6 +24,15 @@ def init_db():
         conn.close()
     else:
         print("✅ Base de datos ya existe → no se modifica.")
+        
+    CREATE TABLE IF NOT EXISTS SuppliersAndExpenses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    supplier_name TEXT NOT NULL,
+    description TEXT,
+    amount REAL,
+    expense_date TEXT DEFAULT (datetime('now'))
+)
+
 
 
 init_db()
@@ -87,3 +96,26 @@ def download_db():
 ## 
 ## if __name__ == '__main__':
 ##     app.run(debug=True)
+
+# Página para ver y agregar gastos
+@app.route('/gastos', methods=['GET', 'POST'])
+def gastos():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        supplier = request.form['supplier']
+        description = request.form['description']
+        amount = float(request.form['amount'])
+        date = request.form.get('date') or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        cursor.execute('''
+            INSERT INTO SuppliersAndExpenses (supplier_name, description, amount, expense_date)
+            VALUES (?, ?, ?, ?)
+        ''', (supplier, description, amount, date))
+        conn.commit()
+
+    cursor.execute("SELECT * FROM SuppliersAndExpenses ORDER BY expense_date DESC")
+    gastos = cursor.fetchall()
+    conn.close()
+    return render_template('gastos.html', gastos=gastos)
