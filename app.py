@@ -1,12 +1,13 @@
-from flask import Flask, render_template, request, send_file, Response
+from flask import Flask, render_template, request, send_file, redirect, url_for, session, flash, Response
 import sqlite3
 import os
 from datetime import datetime
-import csv
 
 app = Flask(__name__)
+app.secret_key = "clave-supersecreta"  # Clave para sesiones
 
-# Ruta a la base de datos principal
+GASTOS_PASSWORD = "admin123"
+
 DB_PATH = os.path.join(os.path.dirname(__file__), 'empanadas.db')
 
 # Crear tablas si no existen
@@ -14,7 +15,6 @@ def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # Tabla principal de sabores
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS EmpanadaFlavors (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,7 +23,6 @@ def init_db():
         )
     ''')
 
-    # Tabla histórica
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS EmpanadaFlavors_History (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,7 +33,6 @@ def init_db():
         )
     ''')
 
-    # Tabla de proveedores y gastos
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS SuppliersAndExpenses (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -50,19 +48,19 @@ def init_db():
 
 init_db()
 
-# HOME
+# Home principal
 @app.route('/')
 def home():
     return render_template('home.html')
 
-# PÁGINA DE VOTACIÓN
+# Página de votación
 @app.route('/votar')
 def votar():
     image_folder = os.path.join(app.static_folder, 'images', 'empanadas')
     images = [f for f in os.listdir(image_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
     return render_template('index.html', images=images)
 
-# PROCESAR VOTO
+# Votar por sabor
 @app.route('/submit', methods=['POST'])
 def submit():
     flavor = request.form['flavor'].strip()
@@ -81,7 +79,7 @@ def submit():
     conn.close()
     return render_template('result.html', flavor=flavor)
 
-# VER SABORES
+# Ver sabores y votos
 @app.route('/flavors')
 def flavors():
     conn = sqlite3.connect(DB_PATH)
@@ -91,13 +89,13 @@ def flavors():
     conn.close()
     return render_template('flavors.html', flavors=data)
 
-# DESCARGAR BASE DE DATOS
+# Descargar base con timestamp
 @app.route('/download-db')
 def download_db():
     filename = f"empanadas-{datetime.now().strftime('%Y-%m-%d_%H-%M')}.db"
     return send_file(DB_PATH, as_attachment=True, download_name=filename)
 
-# RESET MANUAL
+# Reset manual
 @app.route('/reset-db')
 def reset_db():
     conn = sqlite3.connect(DB_PATH)
@@ -107,9 +105,24 @@ def reset_db():
     conn.close()
     return "🥟 La base de datos ha sido reiniciada exitosamente."
 
-# NUEVA SECCIÓN: GASTOS Y PROVEEDORES
+# Login para sección de gastos
+@app.route('/login-gastos', methods=['GET', 'POST'])
+def login_gastos():
+    if request.method == 'POST':
+        password = request.form['password']
+        if password == GASTOS_PASSWORD:
+            session['autorizado_gastos'] = True
+            return redirect(url_for('gastos'))
+        else:
+            flash("Contraseña incorrecta")
+    return render_template('login_gastos.html')
+
+# Página de gastos
 @app.route('/gastos', methods=['GET', 'POST'])
 def gastos():
+    if not session.get('autorizado_gastos'):
+        return redirect(url_for('login_gastos'))
+
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
@@ -130,27 +143,46 @@ def gastos():
     conn.close()
     return render_template('gastos.html', gastos=gastos)
 
-# INICIAR FLASK LOCAL
-if __name__ == '__main__':
-    app.run(debug=True)
-
+# Descargar gastos CSV
 @app.route('/gastos-csv')
 def download_gastos_csv():
+    if not session.get('autorizado_gastos'):
+        return redirect(url_for('login_gastos'))
+
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("SELECT supplier_name, description, amount, expense_date FROM SuppliersAndExpenses")
     rows = cursor.fetchall()
     conn.close()
 
-    # Armar el CSV en memoria
     csv_data = "Proveedor,Descripción,Monto,Fecha\n"
     for row in rows:
         csv_data += f"{row[0]},{row[1]},{row[2]},{row[3]}\n"
 
-    # Devolver como respuesta tipo archivo CSV
     return Response(
         csv_data,
         mimetype="text/csv",
         headers={"Content-Disposition": "attachment;filename=gastos.csv"}
     )
-       
+
+# Vista por proveedor
+@app.route('/gastos-proveedores')
+def resumen_proveedores():
+    if not session.get('autorizado_gastos'):
+        return redirect(url_for('login_gastos'))
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT supplier_name, SUM(amount) as total
+        FROM SuppliersAndExpenses
+        GROUP BY supplier_name
+        ORDER BY total DESC
+    ''')
+    resumen = cursor.fetchall()
+    conn.close()
+    return render_template('resumen_proveedores.html', resumen=resumen)
+
+# Ejecutar local
+if __name__ == '__main__':
+    app.run(debug=True)

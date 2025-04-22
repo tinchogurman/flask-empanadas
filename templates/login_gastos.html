@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Acceso a gastos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Acceso a gastos</h1>
+        <form method="POST">
+            <label>Contraseña:</label>
+            <input type="password" name="password" required>
+            <button type="submit">Ingresar</button>
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <p style="color:red;">{{ messages[0] }}</p>
+          {% endif %}
+        {% endwith %}
+
+        <a href="/" class="home-button">← Volver al Home</a>
+    </div>
+</body>
+</html>
