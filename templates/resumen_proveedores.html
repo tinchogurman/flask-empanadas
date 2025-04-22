@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resumen por Proveedor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Gastos Totales por Proveedor</h1>
+        <table>
+            <tr>
+                <th>Proveedor</th>
+                <th>Total Gastado</th>
+            </tr>
+            {% for proveedor, total in resumen %}
+            <tr>
+                <td>{{ proveedor }}</td>
+                <td>${{ "%.2f"|format(total) }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <a href="/gastos" class="home-button">← Volver a gastos</a>
+    </div>
+</body>
+</html>

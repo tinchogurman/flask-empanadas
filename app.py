@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, Response
 import sqlite3
 import os
 from datetime import datetime
+import csv
 
 app = Flask(__name__)
 
@@ -132,3 +133,35 @@ def gastos():
 # INICIAR FLASK LOCAL
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/gastos-csv')
+def download_gastos_csv():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT supplier_name, description, amount, expense_date FROM SuppliersAndExpenses")
+    rows = cursor.fetchall()
+    conn.close()
+
+    def generate():
+        data = csv.writer([])
+        yield "Proveedor,Descripción,Monto,Fecha\n"
+        for row in rows:
+            yield f"{row[0]},{row[1]},{row[2]},{row[3]}\n"
+
+    return Response(generate(), mimetype='text/csv',
+                    headers={"Content-Disposition": "attachment;filename=gastos.csv"})
+                    
+                    
+@app.route('/gastos-proveedores')
+def resumen_proveedores():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT supplier_name, SUM(amount) as total
+        FROM SuppliersAndExpenses
+        GROUP BY supplier_name
+        ORDER BY total DESC
+    ''')
+    resumen = cursor.fetchall()
+    conn.close()
+    return render_template('resumen_proveedores.html', resumen=resumen)        
