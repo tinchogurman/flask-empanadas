@@ -142,26 +142,15 @@ def download_gastos_csv():
     rows = cursor.fetchall()
     conn.close()
 
-    def generate():
-        data = csv.writer([])
-        yield "Proveedor,Descripción,Monto,Fecha\n"
-        for row in rows:
-            yield f"{row[0]},{row[1]},{row[2]},{row[3]}\n"
+    # Armar el CSV en memoria
+    csv_data = "Proveedor,Descripción,Monto,Fecha\n"
+    for row in rows:
+        csv_data += f"{row[0]},{row[1]},{row[2]},{row[3]}\n"
 
-    return Response(generate(), mimetype='text/csv',
-                    headers={"Content-Disposition": "attachment;filename=gastos.csv"})
-                    
-                    
-@app.route('/gastos-proveedores')
-def resumen_proveedores():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT supplier_name, SUM(amount) as total
-        FROM SuppliersAndExpenses
-        GROUP BY supplier_name
-        ORDER BY total DESC
-    ''')
-    resumen = cursor.fetchall()
-    conn.close()
-    return render_template('resumen_proveedores.html', resumen=resumen)        
+    # Devolver como respuesta tipo archivo CSV
+    return Response(
+        csv_data,
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment;filename=gastos.csv"}
+    )
+       
