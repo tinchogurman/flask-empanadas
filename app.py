@@ -5,12 +5,10 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "clave-supersecreta"  # Clave para sesiones
-
 GASTOS_PASSWORD = "admin123"
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'empanadas.db')
 
-# Crear tablas si no existen
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -39,6 +37,7 @@ def init_db():
             supplier_name TEXT NOT NULL,
             description TEXT,
             amount REAL,
+            category TEXT,
             expense_date TEXT DEFAULT (datetime('now'))
         )
     ''')
@@ -48,19 +47,16 @@ def init_db():
 
 init_db()
 
-# Home principal
 @app.route('/')
 def home():
     return render_template('home.html')
 
-# Página de votación
 @app.route('/votar')
 def votar():
     image_folder = os.path.join(app.static_folder, 'images', 'empanadas')
     images = [f for f in os.listdir(image_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
     return render_template('index.html', images=images)
 
-# Votar por sabor
 @app.route('/submit', methods=['POST'])
 def submit():
     flavor = request.form['flavor'].strip()
@@ -79,7 +75,6 @@ def submit():
     conn.close()
     return render_template('result.html', flavor=flavor)
 
-# Ver sabores y votos
 @app.route('/flavors')
 def flavors():
     conn = sqlite3.connect(DB_PATH)
@@ -89,13 +84,11 @@ def flavors():
     conn.close()
     return render_template('flavors.html', flavors=data)
 
-# Descargar base con timestamp
 @app.route('/download-db')
 def download_db():
     filename = f"empanadas-{datetime.now().strftime('%Y-%m-%d_%H-%M')}.db"
     return send_file(DB_PATH, as_attachment=True, download_name=filename)
 
-# Reset manual
 @app.route('/reset-db')
 def reset_db():
     conn = sqlite3.connect(DB_PATH)
@@ -105,7 +98,6 @@ def reset_db():
     conn.close()
     return "🥟 La base de datos ha sido reiniciada exitosamente."
 
-# Login para sección de gastos
 @app.route('/login-gastos', methods=['GET', 'POST'])
 def login_gastos():
     if request.method == 'POST':
@@ -117,7 +109,6 @@ def login_gastos():
             flash("Contraseña incorrecta")
     return render_template('login_gastos.html')
 
-# Página de gastos
 @app.route('/gastos', methods=['GET', 'POST'])
 def gastos():
     if not session.get('autorizado_gastos'):
@@ -130,20 +121,30 @@ def gastos():
         supplier = request.form['supplier']
         description = request.form['description']
         amount = float(request.form['amount'])
+        category = request.form['category']
         date = request.form.get('date') or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         cursor.execute('''
-            INSERT INTO SuppliersAndExpenses (supplier_name, description, amount, expense_date)
-            VALUES (?, ?, ?, ?)
-        ''', (supplier, description, amount, date))
+            INSERT INTO SuppliersAndExpenses (supplier_name, description, amount, category, expense_date)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (supplier, description, amount, category, date))
         conn.commit()
 
+    # Total general
+    cursor.execute("SELECT SUM(amount) FROM SuppliersAndExpenses")
+    total_gastos = cursor.fetchone()[0] or 0
+
+    # Por categoría
+    cursor.execute("SELECT category, SUM(amount) FROM SuppliersAndExpenses GROUP BY category")
+    categorias = cursor.fetchall()
+
+    # Lista completa
     cursor.execute("SELECT * FROM SuppliersAndExpenses ORDER BY expense_date DESC")
     gastos = cursor.fetchall()
     conn.close()
-    return render_template('gastos.html', gastos=gastos)
 
-# Descargar gastos CSV
+    return render_template('gastos.html', gastos=gastos, total_gastos=total_gastos, categorias=categorias)
+
 @app.route('/gastos-csv')
 def download_gastos_csv():
     if not session.get('autorizado_gastos'):
@@ -165,7 +166,6 @@ def download_gastos_csv():
         headers={"Content-Disposition": "attachment;filename=gastos.csv"}
     )
 
-# Vista por proveedor
 @app.route('/gastos-proveedores')
 def resumen_proveedores():
     if not session.get('autorizado_gastos'):
@@ -183,6 +183,5 @@ def resumen_proveedores():
     conn.close()
     return render_template('resumen_proveedores.html', resumen=resumen)
 
-# Ejecutar local
 if __name__ == '__main__':
     app.run(debug=True)

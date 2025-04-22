@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <title>Suppliers & Expenses</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Suppliers & Expenses</h1>
 
+        <!-- Formulario de carga -->
         <form method="POST" action="/gastos">
             <label>Supplier Name:</label>
             <input type="text" name="supplier" required>
@@ -19,6 +21,15 @@
             <label>Amount:</label>
             <input type="number" name="amount" step="0.01" required>
 
+            <label>Category:</label>
+            <select name="category" required>
+                <option value="Insumos">Insumos</option>
+                <option value="Transporte">Transporte</option>
+                <option value="Maquinaria">Maquinaria</option>
+                <option value="Publicidad">Publicidad</option>
+                <option value="Otros">Otros</option>
+            </select>
+
             <label>Date (optional):</label>
             <input type="datetime-local" name="date">
 
@@ -27,19 +38,59 @@
 
         <hr>
 
+        <!-- Total y gráfico -->
+        <h2>Total de gastos: ${{ "%.2f"|format(total_gastos) }}</h2>
+
+        <canvas id="graficoCategorias" width="400" height="200"></canvas>
+
+        <script>
+        const ctx = document.getElementById('graficoCategorias').getContext('2d');
+        const grafico = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ categorias | map(attribute=0) | list | tojson }},
+                datasets: [{
+                    label: 'Gasto por categoría',
+                    data: {{ categorias | map(attribute=1) | list | tojson }},
+                    backgroundColor: 'rgba(107, 187, 224, 0.7)',
+                    borderColor: '#6bbbe0',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => `$${ctx.parsed.y}` } }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Monto ($)' }
+                    }
+                }
+            }
+        });
+        </script>
+
+        <hr>
+
+        <!-- Tabla de gastos -->
         <h2>Expense History</h2>
         <table>
             <tr>
                 <th>Date</th>
                 <th>Supplier</th>
                 <th>Description</th>
+                <th>Category</th>
                 <th>Amount</th>
             </tr>
             {% for row in gastos %}
             <tr>
-                <td>{{ row[4] }}</td>
+                <td>{{ row[5] }}</td>
                 <td>{{ row[1] }}</td>
                 <td>{{ row[2] }}</td>
+                <td>{{ row[4] }}</td>
                 <td>${{ "%.2f"|format(row[3]) }}</td>
             </tr>
             {% endfor %}
