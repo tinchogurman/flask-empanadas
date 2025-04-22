@@ -1,60 +1,70 @@
 from flask import Flask, render_template, request, send_file
-from datetime import datetime
 import sqlite3
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 
+# Ruta a la base de datos principal
 DB_PATH = os.path.join(os.path.dirname(__file__), 'empanadas.db')
-print("📍 Ruta real del archivo SQLite:", DB_PATH)
 
+# Crear tablas si no existen
 def init_db():
-    if not os.path.isfile(DB_PATH):
-        print("📁 No existe empanadas.db → creando base y tabla...")
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS EmpanadaFlavors (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                flavor TEXT UNIQUE,
-                count INTEGER
-            )
-        ''')
-        conn.commit()
-        conn.close()
-    else:
-        print("✅ Base de datos ya existe → no se modifica.")
-        
-    CREATE TABLE IF NOT EXISTS SuppliersAndExpenses (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    supplier_name TEXT NOT NULL,
-    description TEXT,
-    amount REAL,
-    expense_date TEXT DEFAULT (datetime('now'))
-)
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
 
+    # Tabla principal de sabores
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS EmpanadaFlavors (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            flavor TEXT UNIQUE,
+            count INTEGER
+        )
+    ''')
 
+    # Tabla histórica
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS EmpanadaFlavors_History (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            flavor TEXT,
+            count INTEGER,
+            snapshot_date TEXT,
+            UNIQUE(flavor, snapshot_date)
+        )
+    ''')
+
+    # Tabla de proveedores y gastos
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS SuppliersAndExpenses (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            supplier_name TEXT NOT NULL,
+            description TEXT,
+            amount REAL,
+            expense_date TEXT DEFAULT (datetime('now'))
+        )
+    ''')
+
+    conn.commit()
+    conn.close()
 
 init_db()
 
-# 🏠 Home principal en /
+# HOME
 @app.route('/')
 def home():
     return render_template('home.html')
 
-# 🗳 Página de votación ahora en /votar
+# PÁGINA DE VOTACIÓN
 @app.route('/votar')
 def votar():
     image_folder = os.path.join(app.static_folder, 'images', 'empanadas')
     images = [f for f in os.listdir(image_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
     return render_template('index.html', images=images)
 
-
+# PROCESAR VOTO
 @app.route('/submit', methods=['POST'])
 def submit():
     flavor = request.form['flavor'].strip()
-    print("✨ Recibido flavor:", flavor)
-
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
@@ -68,9 +78,9 @@ def submit():
     
     conn.commit()
     conn.close()
-
     return render_template('result.html', flavor=flavor)
 
+# VER SABORES
 @app.route('/flavors')
 def flavors():
     conn = sqlite3.connect(DB_PATH)
@@ -79,25 +89,24 @@ def flavors():
     data = cursor.fetchall()
     conn.close()
     return render_template('flavors.html', flavors=data)
-    
+
+# DESCARGAR BASE DE DATOS
 @app.route('/download-db')
 def download_db():
     filename = f"empanadas-{datetime.now().strftime('%Y-%m-%d_%H-%M')}.db"
     return send_file(DB_PATH, as_attachment=True, download_name=filename)
 
-## @app.route('/reset-db')
-## def reset_db():
-##     conn = sqlite3.connect(DB_PATH)
-##     cursor = conn.cursor()
-##     cursor.execute("DELETE FROM EmpanadaFlavors")
-##     conn.commit()
-##     conn.close()
-##     return "🥟 La base de datos ha sido reiniciada exitosamente."
-## 
-## if __name__ == '__main__':
-##     app.run(debug=True)
+# RESET MANUAL
+@app.route('/reset-db')
+def reset_db():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM EmpanadaFlavors")
+    conn.commit()
+    conn.close()
+    return "🥟 La base de datos ha sido reiniciada exitosamente."
 
-# Página para ver y agregar gastos
+# NUEVA SECCIÓN: GASTOS Y PROVEEDORES
 @app.route('/gastos', methods=['GET', 'POST'])
 def gastos():
     conn = sqlite3.connect(DB_PATH)
@@ -119,3 +128,7 @@ def gastos():
     gastos = cursor.fetchall()
     conn.close()
     return render_template('gastos.html', gastos=gastos)
+
+# INICIAR FLASK LOCAL
+if __name__ == '__main__':
+    app.run(debug=True)
