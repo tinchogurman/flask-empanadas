@@ -204,3 +204,15 @@ canvas {
     box-shadow: none;
     border: none;
 }
+
+@media (max-width: 768px) {
+    .gallery-row {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .flavor-image {
+        width: 45vw; /* ocupa el 45% del ancho visible */
+    }
+}
