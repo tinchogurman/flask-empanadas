@@ -11,13 +11,11 @@
 
     <hr class="decorative-line">
 
-    <a href="/votar" class="vote-button">Vote for your favorite flavor 🥟</a>
-
-    <div class="gallery-home">
-        <img src="{{ url_for('static', filename='images/home/Tienda-packs.PNG') }}">
-        <img src="{{ url_for('static', filename='images/home/Cooking-Empanadas(1).PNG') }}">
-        <img src="{{ url_for('static', filename='images/home/Empa(1).PNG') }}">
-        <img src="{{ url_for('static', filename='images/home/Pastalinda(1).PNG') }}">
+    <div class="gallery-home" style="display: flex; justify-content: center; gap: 12px; flex-wrap: nowrap; overflow-x: auto;">
+        <img src="{{ url_for('static', filename='images/home/Tienda-packs.PNG') }}" style="width: 22%; height: auto; border-radius: 8px;">
+        <img src="{{ url_for('static', filename='images/home/Cooking-Empanadas(1).PNG') }}" style="width: 22%; height: auto; border-radius: 8px;">
+        <img src="{{ url_for('static', filename='images/home/Empa(1).PNG') }}" style="width: 22%; height: auto; border-radius: 8px;">
+        <img src="{{ url_for('static', filename='images/home/Pastalinda(1).PNG') }}" style="width: 22%; height: auto; border-radius: 8px;">
     </div>
 </div>
 
