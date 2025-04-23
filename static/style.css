@@ -198,7 +198,7 @@ canvas {
 }
 
 .flavor-image {
-    width: 400px;  /* ajustá este valor si querés que se vean más grandes o más chicas */
+    width: 600px;  /* ajustá este valor si querés que se vean más grandes o más chicas */
     height: auto;
     border-radius: 0;
     box-shadow: none;
