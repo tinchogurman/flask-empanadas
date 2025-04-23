@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eve's Empanadas</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='images/logo-small.png') }}">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div style="display: flex; align-items: center; gap: 14px; font-size: 20px;">
+      <a href="/">
+        <img src="{{ url_for('static', filename='images/logo-small.png') }}" alt="Logo" style="height: 52px;">
+      </a>
+      <span style="font-weight: 700; color: #014aad">Eve's Empanadas</span>
+    </div>
+    <div>
+      <a href="/">Home</a>
+      <a href="/votar">Vote</a>
+      <a href="/flavors">Results</a>
+      <a href="/login-gastos">Expenses</a>
+    </div>
+  </div>
+
+  <!-- CONTENIDO DINÁMICO -->
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+
+</body>
+</html>
