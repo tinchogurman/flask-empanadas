@@ -183,7 +183,7 @@ canvas {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px; /* espaciado entre imágenes */
+    gap: 3px; /* espaciado entre imágenes */
     flex-wrap: nowrap;
     padding: 0;
     margin: 0 auto;
