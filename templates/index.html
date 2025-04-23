@@ -1,24 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Vote for your favorite flavor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
 
-    <div class="container">
-        <h1 class="section-title">Choose your favorite!</h1>
+<h1 class="section-title" style="text-align: center;">Choose your favorite!</h1>
 
-        <div class="gallery-row">
-            {% for img in images %}
-            <form method="POST" action="/submit" class="photo-form">
-                <input type="hidden" name="flavor" value="{{ img.rsplit('.', 1)[0].replace('-', ' ') }}">
-                <input type="image" src="{{ url_for('static', filename='images/empanadas/' + img) }}" class="flavor-image" alt="Empanada">
-            </form>
-            {% endfor %}
-        </div>
-    </div>
+<div class="gallery-row">
+    {% for img in images %}
+    <form method="POST" action="/submit" class="photo-form">
+        <input type="hidden" name="flavor" value="{{ img.rsplit('.', 1)[0].replace('-', ' ') }}">
+        <input type="image" src="{{ url_for('static', filename='images/empanadas/' + img) }}" class="flavor-image" alt="Empanada">
+    </form>
+    {% endfor %}
+</div>
 
-</body>
-</html>
+{% endblock %}
