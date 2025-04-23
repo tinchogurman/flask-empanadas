@@ -1,230 +1,142 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
 body {
     margin: 0;
-    padding: 0;
-    font-family: 'Fredoka One', cursive;
-    background-color: #6bbbe0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #e7f3f9;
+    color: #333;
+}
+
+/* NAVBAR */
+.navbar {
+    background-color: #014aad;
     color: white;
-    text-align: center;
-}
-
-.container {
-    max-width: 1000px;
-    margin: auto;
-    padding: 40px 20px;
-}
-
-h1 {
-    font-size: 44px;
-    margin-top: 0px;
-}
-
-p {
-    font-size: 20px;
-    margin-bottom: 10px;
-    font-weight: normal;
-}
-
-.decorative-line {
-    width: 60%;
-    height: 2px;
-    background-color: white;
-    border: none;
-    margin: 20px auto 30px;
-    opacity: 0.7;
-}
-
-.gallery-row img {
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 16px;
-    margin: 10px;
-}
-
-
-.gallery-row {
+    padding: 16px 32px;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px 0;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-.photo-form img {
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 12px;
-    border: 3px solid white;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    transition: transform 0.2s ease;
-    display: block;
-}
-
-.photo-form img:hover {
-    transform: scale(1.06);
-    cursor: pointer;
-}
-
-
-
-a {
-    margin-top: 20px;
+.navbar a {
     color: white;
+    margin: 0 12px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.navbar a:hover {
     text-decoration: underline;
 }
 
-@media screen and (max-width: 600px) {
-    h1 {
-        font-size: 32px;
-    }
-
-    p {
-        font-size: 16px;
-    }
-
-    .photo-form img {
-        width: 90px;
-        height: 90px;
-    }
-
-    .decorative-line {
-        width: 80%;
-    }
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
 }
 
-.vote-button {
-    background-color: white;
-    color: #6bbbe0;
-    font-weight: bold;
-    font-size: 18px;
-    padding: 14px 28px;
-    border-radius: 30px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    display: inline-block;
-    margin-top: 30px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-.vote-button:hover {
-    background-color: #f1f1f1;
-    transform: scale(1.05);
-}
-
-.decorative-line {
-    width: 60%;
-    height: 2px;
-    background-color: white;
-    border: none;
-    margin: 20px auto 30px;
-    opacity: 0.7;
-}
-
-.gallery-home {
-    margin-top: 40px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-}
-
-.gallery-home img {
-    width: 320px;
-    height: 320px;
-    object-fit: cover;
-    border-radius: 14px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    transition: transform 0.3s ease;
-}
-
-.gallery-home img:hover {
-    transform: scale(1.05);
-}
-
-.home-button {
-    background-color: transparent;
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 10px 20px;
-    border: 2px solid white;
-    border-radius: 30px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    display: inline-block;
-    margin-bottom: 20px;
-}
-
-.home-button:hover {
-    background-color: white;
-    color: #6bbbe0;
-}
-
-.instagram-link {
-    display: inline-block;
-    margin-top: 25px;
-    font-size: 18px;
-    font-weight: bold;
-    text-decoration: none;
-    color: white;
-    border: 2px solid white;
-    padding: 10px 20px;
-    border-radius: 30px;
-    transition: all 0.3s ease;
-}
-
-.instagram-link:hover {
-    background-color: white;
-    color: #6bbbe0;
-}
-
-.logo-wrapper {
-    text-align: center;
-    margin-bottom: 0px;
-}
-
-.logo-wrapper img {
-    width: 120px;
-    height: auto;
-    margin-top: 10px;
-    margin-bottom: -10px;  /* acerca el texto */
+h1, h2 {
+    color: #014aad;
+    font-weight: 700;
 }
 
 form {
-    margin-bottom: 30px;
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin-bottom: 40px;
 }
 
-form input, form button {
+form label {
     display: block;
+    margin: 12px 0 6px;
+    font-weight: 600;
+}
+
+form input, form select, form button {
     width: 100%;
-    margin: 8px 0;
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
     font-size: 16px;
 }
 
 form button {
-    background-color: #6bbbe0;
+    background-color: #0b6ce0;
     color: white;
+    font-weight: 600;
+    border: none;
     cursor: pointer;
+    transition: background 0.3s ease;
 }
 
 form button:hover {
-    background-color: #58a9ce;
+    background-color: #084db3;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 table th, table td {
-    border-bottom: 1px solid #ccc;
-    padding: 10px;
+    padding: 16px;
     text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+table th {
+    background-color: #f5faff;
+    font-weight: 600;
+    color: #014aad;
+}
+
+canvas {
+    margin-top: 30px;
+    background-color: white;
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+/* BOTÓN ESTILO */
+.home-button, .back-button {
+    display: inline-block;
+    padding: 12px 20px;
+    margin-top: 20px;
+    background-color: #0b6ce0;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.home-button:hover, .back-button:hover {
+    background-color: #084db3;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .navbar a {
+        margin: 8px 0;
+    }
+
+    table, canvas {
+        font-size: 14px;
+    }
 }
