@@ -178,3 +178,29 @@ canvas {
 .vote-button:hover {
     background-color: #084db3;
 }
+
+.gallery-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* espaciado entre imágenes */
+    flex-wrap: nowrap;
+    padding: 0;
+    margin: 0 auto;
+}
+
+.photo-form {
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    background: none;
+}
+
+.flavor-image {
+    width: 400px;  /* ajustá este valor si querés que se vean más grandes o más chicas */
+    height: auto;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+}
