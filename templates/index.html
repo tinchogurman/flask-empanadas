@@ -1,17 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container">
-    <h1 style="text-align: center;">Choose your favorite!</h1>
+<h1 class="centered-title">Choose your favorite!</h1>
 
-    <div class="gallery-row">
-        {% for img in images %}
-        <form method="POST" action="/submit" class="photo-form">
-            <input type="hidden" name="flavor" value="{{ img.rsplit('.', 1)[0].replace('-', ' ') }}">
-            <input type="image" src="{{ url_for('static', filename='images/empanadas/' + img) }}" alt="Empanada" />
-        </form>
-        {% endfor %}
-    </div>
+<div class="gallery-row" style="justify-content: center; background: none; gap: 20px; padding: 20px 0;">
+    {% for img in images %}
+    <form method="POST" action="/submit" class="photo-form" style="background: none; border: none; box-shadow: none;">
+        <input type="hidden" name="flavor" value="{{ img.rsplit('.', 1)[0].replace('-', ' ') }}">
+        <input type="image" src="{{ url_for('static', filename='images/empanadas/' + img) }}" alt="Empanada" style="width: 200px; height: auto; border-radius: 12px;">
+    </form>
+    {% endfor %}
 </div>
 
 {% endblock %}
