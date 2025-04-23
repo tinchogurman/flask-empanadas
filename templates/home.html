@@ -1,41 +1,23 @@
-<!DOCTYPE html>
-<div class="navbar">
-    <div style="display: flex; align-items: center; gap: 12px;">
-        <img src="{{ url_for('static', filename='images/logo-small.png') }}" alt="Logo" style="height: 56px;">
-        <span style="font-weight: 700; font-size: 18px;">Eve's Empanadas</span>
-    </div>
-    <div>
-        <a href="/">Home</a>
-        <a href="/votar">Vote</a>
-        <a href="/flavors">Results</a>
-        <a href="/login-gastos">Expenses</a>
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <h1>Locally made with seasonal ingredients and a lot of love</h1>
+    <p>Find us at your favorite markets and events!</p>
+    <a href="https://www.instagram.com/eves_empanadas?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="instagram-link" target="_blank">
+        📸 Follow us on Instagram
+    </a>
+
+    <hr class="decorative-line">
+
+    <a href="/votar" class="vote-button">Vote for your favorite flavor 🥟</a>
+
+    <div class="gallery-home">
+        <img src="{{ url_for('static', filename='images/home/Tienda-packs.PNG') }}">
+        <img src="{{ url_for('static', filename='images/home/Cooking-Empanadas(1).PNG') }}">
+        <img src="{{ url_for('static', filename='images/home/Empa(1).PNG') }}">
+        <img src="{{ url_for('static', filename='images/home/Pastalinda(1).PNG') }}">
     </div>
 </div>
-<html lang="en">
-<head>
 
-    <meta charset="UTF-8">
-    <title>Welcome to Eve’s Empanadas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div class="container">
-        <h1>Locally made with seasonal ingredients and a lot of love</h1>
-        <p>Find us at your favorite markets and events!</p>
-		<a href="https://www.instagram.com/eves_empanadas?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="instagram-link" target="_blank">
-    📸 Follow us on Instagram</a>
-
-        <hr class="decorative-line">
-
-        <a href="/votar" class="vote-button">Vote for your favorite flavor 🥟</a>
-
-        <div class="gallery-home">
-            <img src="{{ url_for('static', filename='images/home/Tienda-packs.PNG') }}">
-            <img src="{{ url_for('static', filename='images/home/Cooking-Empanadas(1).PNG') }}">
-            <img src="{{ url_for('static', filename='images/home/Empa(1).PNG') }}">
-            <img src="{{ url_for('static', filename='images/home/Pastalinda(1).PNG') }}">
-        </div>
-    </div>
-</body>
-</html>
+{% endblock %}
