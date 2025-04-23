@@ -9,8 +9,8 @@ body {
 
 /* NAVBAR */
 .navbar {
-    background-color: #014aad;
-    color: white;
+    background-color: white;
+    color: #014aad;
     padding: 24px 40px;
 	height: 80px;
     display: flex;
@@ -22,7 +22,7 @@ body {
 }
 
 .navbar a {
-    color: white;
+    color: #014aad;
     margin: 0 12px;
     text-decoration: none;
     font-weight: 600;

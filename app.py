@@ -122,7 +122,11 @@ def gastos():
         description = request.form['description']
         amount = float(request.form['amount'])
         category = request.form['category']
-        date = request.form.get('date') or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        if request.form.get('date'):
+            raw_date = request.form['date']
+            date = datetime.strptime(raw_date, '%Y-%m-%dT%H:%M').strftime('%d-%m-%Y %H:%M:%S')
+        else:
+            date = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
 
         cursor.execute('''
             INSERT INTO SuppliersAndExpenses (supplier_name, description, amount, category, expense_date)
