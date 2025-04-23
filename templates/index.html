@@ -14,4 +14,11 @@
             {% for img in images %}
             <form method="POST" action="/submit" class="photo-form">
                 <input type="hidden" name="flavor" value="{{ img.rsplit('.', 1)[0].replace('-', ' ') }}">
-                <input type="image" src="{{ url_for('static', filename='images/empanadas/' + img) }}" class="flavor-image" alt="_
+                <input type="image" src="{{ url_for('static', filename='images/empanadas/' + img) }}" class="flavor-image" alt="Empanada">
+            </form>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>
