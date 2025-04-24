@@ -11,7 +11,7 @@ body {
 .navbar {
     background-color: white;
     color: #014aad;
-    padding: 24px 40px;
+    padding: 28px 40px;
 	height: 80px;
     display: flex;
     justify-content: space-between;
@@ -25,7 +25,7 @@ body {
     color: #014aad;
     margin: 0 12px;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .navbar a:hover {
@@ -215,4 +215,18 @@ canvas {
     .flavor-image {
         width: 45vw; /* ocupa el 45% del ancho visible */
     }
+}
+
+.banner-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.home-banner {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
 }
