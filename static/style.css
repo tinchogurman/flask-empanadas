@@ -218,7 +218,7 @@ canvas {
 }
 
 .banner-container {
-    width: 180%;
+    width: 120%;
     display: flex;
     justify-content: center;
     margin-top: 20px;
@@ -226,7 +226,7 @@ canvas {
 
 .home-banner {
     width: 180%;
-	max-height: 320px;
+	max-height: 260px;
     height: auto;
 	object-fit: cover;
     border-radius: 0;
