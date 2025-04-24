@@ -218,7 +218,7 @@ canvas {
 }
 
 .banner-container {
-    width: 100%;
+    width: 200%;
     display: flex;
     justify-content: center;
     margin-top: 20px;
