@@ -218,19 +218,18 @@ canvas {
 }
 
 .banner-container {
-    width: 100vw; /* usa todo el ancho de la ventana */
+    width: 100%;
+    overflow: hidden;
     display: flex;
     justify-content: center;
-    overflow: hidden;
-    margin: 0 auto;
+    padding: 0;
+    margin: 0;
 }
 
 .home-banner {
     width: 100%;
-    max-width: 100vw;
     height: auto;
     object-fit: cover;
     display: block;
-    margin: 0 auto;
+    max-width: 100%;
 }
-
