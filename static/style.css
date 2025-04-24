@@ -218,14 +218,14 @@ canvas {
 }
 
 .banner-container {
-    width: 200%;
+    width: 180%;
     display: flex;
     justify-content: center;
     margin-top: 20px;
 }
 
 .home-banner {
-    width: 100%;
+    width: 180%;
 	max-height: 320px;
     height: auto;
 	object-fit: cover;
