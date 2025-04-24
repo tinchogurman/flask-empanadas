@@ -66,7 +66,7 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: { display: true, text: 'Monto ($)' }
+                        title: { display: true, text: 'Amount ($)' }
                     }
                 }
             }
@@ -79,24 +79,31 @@
         <h2>Expense History</h2>
         <table>
             <tr>
+                <th>ID</th>
                 <th>Date</th>
                 <th>Supplier</th>
                 <th>Description</th>
                 <th>Category</th>
                 <th>Amount</th>
+                <th>Delete</th>
             </tr>
             {% for row in gastos %}
             <tr>
+                <td>{{ row[0] }}</td>
                 <td>{{ row[5] }}</td>
                 <td>{{ row[1] }}</td>
                 <td>{{ row[2] }}</td>
                 <td>{{ row[4] }}</td>
                 <td>${{ "%.2f"|format(row[3]) }}</td>
+                <td>
+                    <form method="POST" action="/delete-expense" style="display:inline;">
+                        <input type="hidden" name="expense_id" value="{{ row[0] }}">
+                        <button type="submit" style="color:red; background:none; border:none; font-weight:bold; cursor:pointer;">X</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </table>
-
-        <a href="/" class="home-button">← Back to Home</a>
     </div>
 </body>
 </html>

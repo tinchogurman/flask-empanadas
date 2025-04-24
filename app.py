@@ -189,3 +189,17 @@ def resumen_proveedores():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/delete-expense', methods=['POST'])
+def delete_expense():
+    if not session.get('autorizado_gastos'):
+        return redirect(url_for('login_gastos'))
+
+    expense_id = request.form.get('expense_id')
+    if expense_id:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM SuppliersAndExpenses WHERE id = ?", (expense_id,))
+        conn.commit()
+        conn.close()
+    return redirect(url_for('gastos'))
