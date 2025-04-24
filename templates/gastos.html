@@ -61,7 +61,11 @@
                 responsive: true,
                 plugins: {
                     legend: { display: false },
-                    tooltip: { callbacks: { label: ctx => `$${ctx.parsed.y}` } }
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => `$${ctx.parsed.y.toFixed(2)}`
+                        }
+                    }
                 },
                 scales: {
                     y: {

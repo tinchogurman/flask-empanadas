@@ -2,17 +2,16 @@ from flask import Flask, render_template, request, send_file, redirect, url_for,
 import sqlite3
 import os
 from datetime import datetime
+import pytz  # para manejo de zonas horarias
 
 app = Flask(__name__)
-app.secret_key = "clave-supersecreta"  # Clave para sesiones
+app.secret_key = "clave-supersecreta"
 GASTOS_PASSWORD = "admin123"
-
 DB_PATH = os.path.join(os.path.dirname(__file__), 'empanadas.db')
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS EmpanadaFlavors (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,7 +19,6 @@ def init_db():
             count INTEGER
         )
     ''')
-
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS EmpanadaFlavors_History (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,7 +28,6 @@ def init_db():
             UNIQUE(flavor, snapshot_date)
         )
     ''')
-
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS SuppliersAndExpenses (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,7 +38,6 @@ def init_db():
             expense_date TEXT DEFAULT (datetime('now'))
         )
     ''')
-
     conn.commit()
     conn.close()
 
@@ -62,15 +58,12 @@ def submit():
     flavor = request.form['flavor'].strip()
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-
     cursor.execute("SELECT count FROM EmpanadaFlavors WHERE flavor = ?", (flavor,))
     row = cursor.fetchone()
-
     if row:
         cursor.execute("UPDATE EmpanadaFlavors SET count = count + 1 WHERE flavor = ?", (flavor,))
     else:
         cursor.execute("INSERT INTO EmpanadaFlavors (flavor, count) VALUES (?, ?)", (flavor, 1))
-    
     conn.commit()
     conn.close()
     return render_template('result.html', flavor=flavor)
@@ -126,7 +119,8 @@ def gastos():
             raw_date = request.form['date']
             date = datetime.strptime(raw_date, '%Y-%m-%dT%H:%M').strftime('%d-%m-%Y %H:%M:%S')
         else:
-            date = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+            tz_ny = pytz.timezone('America/New_York')
+            date = datetime.now(tz_ny).strftime('%d-%m-%Y %H:%M:%S')
 
         cursor.execute('''
             INSERT INTO SuppliersAndExpenses (supplier_name, description, amount, category, expense_date)
@@ -134,15 +128,12 @@ def gastos():
         ''', (supplier, description, amount, category, date))
         conn.commit()
 
-    # Total general
     cursor.execute("SELECT SUM(amount) FROM SuppliersAndExpenses")
     total_gastos = cursor.fetchone()[0] or 0
 
-    # Por categoría
-    cursor.execute("SELECT category, SUM(amount) FROM SuppliersAndExpenses GROUP BY category")
+    cursor.execute("SELECT category, ROUND(SUM(amount), 2) FROM SuppliersAndExpenses GROUP BY category")
     categorias = cursor.fetchall()
 
-    # Lista completa
     cursor.execute("SELECT * FROM SuppliersAndExpenses ORDER BY expense_date DESC")
     gastos = cursor.fetchall()
     conn.close()
@@ -187,9 +178,6 @@ def resumen_proveedores():
     conn.close()
     return render_template('resumen_proveedores.html', resumen=resumen)
 
-if __name__ == '__main__':
-    app.run(debug=True)
-
 @app.route('/delete-expense', methods=['POST'])
 def delete_expense():
     if not session.get('autorizado_gastos'):
@@ -203,3 +191,6 @@ def delete_expense():
         conn.commit()
         conn.close()
     return redirect(url_for('gastos'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
