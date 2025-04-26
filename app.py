@@ -151,7 +151,7 @@ def download_gastos_csv():
     rows = cursor.fetchall()
     conn.close()
 
-    csv_data = "Proveedor,Descripción,Monto,Fecha\n"
+    csv_data = "Supplier,Description,Amount,Date\n"
     for row in rows:
         csv_data += f"{row[0]},{row[1]},{row[2]},{row[3]}\n"
 
