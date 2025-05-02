@@ -265,3 +265,17 @@ canvas {
   border-radius: 8px;
   cursor: pointer;
 }
+
+.banner-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.home-banner {
+  max-width: 100%;
+  width: 80%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}

@@ -5,17 +5,55 @@
   <h1 class="section-title">Create your own budget!</h1>
 </div>
 
-<form id="budget-form" class="budget-form">
-  {% for flavor in ['Beyond Beef', 'Mushrooms & Leeks', 'Gruyere Cheese & Onions', 'Spicy Corn', 'Spinach & Feta'] %}
-  <div class="budget-entry">
-    <label>{{ flavor }}</label>
-    <button type="button" onclick="changeQuantity('{{ flavor }}', -1)">−</button>
-    <span id="{{ flavor }}-count" class="quantity-display">0</span>
-    <button type="button" onclick="changeQuantity('{{ flavor }}', 1)">+</button>
-  </div>
-  {% endfor %}
+<form id="budget-form" style="text-align: center;">
+  <div class="budget-container">
+    <div class="quantity-controls">
+      <span class="flavor-label">Beyond Beef</span>
+      <div class="button-group">
+        <button type="button" onclick="changeQuantity('Beyond Beef', -1)">−</button>
+        <span id="Beyond Beef-count" class="quantity-number">0</span>
+        <button type="button" onclick="changeQuantity('Beyond Beef', 1)">+</button>
+      </div>
+    </div>
 
-  <button type="button" onclick="addSelectedItems()" class="add-button">Add Selected to Budget</button>
+    <div class="quantity-controls">
+      <span class="flavor-label">Mushrooms & Leeks</span>
+      <div class="button-group">
+        <button type="button" onclick="changeQuantity('Mushrooms & Leeks', -1)">−</button>
+        <span id="Mushrooms & Leeks-count" class="quantity-number">0</span>
+        <button type="button" onclick="changeQuantity('Mushrooms & Leeks', 1)">+</button>
+      </div>
+    </div>
+
+    <div class="quantity-controls">
+      <span class="flavor-label">Gruyere Cheese & Onions</span>
+      <div class="button-group">
+        <button type="button" onclick="changeQuantity('Gruyere Cheese & Onions', -1)">−</button>
+        <span id="Gruyere Cheese & Onions-count" class="quantity-number">0</span>
+        <button type="button" onclick="changeQuantity('Gruyere Cheese & Onions', 1)">+</button>
+      </div>
+    </div>
+
+    <div class="quantity-controls">
+      <span class="flavor-label">Spicy Corn</span>
+      <div class="button-group">
+        <button type="button" onclick="changeQuantity('Spicy Corn', -1)">−</button>
+        <span id="Spicy Corn-count" class="quantity-number">0</span>
+        <button type="button" onclick="changeQuantity('Spicy Corn', 1)">+</button>
+      </div>
+    </div>
+
+    <div class="quantity-controls">
+      <span class="flavor-label">Spinach & Feta</span>
+      <div class="button-group">
+        <button type="button" onclick="changeQuantity('Spinach & Feta', -1)">−</button>
+        <span id="Spinach & Feta-count" class="quantity-number">0</span>
+        <button type="button" onclick="changeQuantity('Spinach & Feta', 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" onclick="addSelectedItems()" class="budget-add-btn">Add Selected to Budget</button>
 </form>
 
 <table id="budget-table">
@@ -30,7 +68,7 @@
   <tbody></tbody>
 </table>
 
-<h3 style="text-align:center;">Total: $<span id="total">0.00</span></h3>
+<h3>Total: $<span id="total">0.00</span></h3>
 
 <div style="text-align: center; margin-top: 20px;">
   <a href="#" id="download-csv" class="home-button" onclick="downloadCSV()">Download</a>
@@ -94,6 +132,7 @@ function downloadCSV() {
     csv += `${item.flavor},${item.quantity},$${item.subtotal.toFixed(2)}\n`;
   });
   csv += `,,Total: $${document.getElementById('total').textContent}`;
+
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
