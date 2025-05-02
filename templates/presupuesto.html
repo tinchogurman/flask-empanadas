@@ -5,56 +5,18 @@
   <h1 class="section-title">Create your own budget!</h1>
 </div>
 
-<form id="budget-form" style="text-align: center;">
-  <div class="budget-container">
-    <div class="quantity-controls">
-      <span class="flavor-label">Beyond Beef</span>
-      <div class="button-group">
-        <button type="button" onclick="changeQuantity('Beyond Beef', -1)">−</button>
-        <span id="Beyond Beef-count" class="quantity-number">0</span>
-        <button type="button" onclick="changeQuantity('Beyond Beef', 1)">+</button>
-      </div>
-    </div>
-
-    <div class="quantity-controls">
-      <span class="flavor-label">Mushrooms & Leeks</span>
-      <div class="button-group">
-        <button type="button" onclick="changeQuantity('Mushrooms & Leeks', -1)">−</button>
-        <span id="Mushrooms & Leeks-count" class="quantity-number">0</span>
-        <button type="button" onclick="changeQuantity('Mushrooms & Leeks', 1)">+</button>
-      </div>
-    </div>
-
-    <div class="quantity-controls">
-      <span class="flavor-label">Gruyere Cheese & Onions</span>
-      <div class="button-group">
-        <button type="button" onclick="changeQuantity('Gruyere Cheese & Onions', -1)">−</button>
-        <span id="Gruyere Cheese & Onions-count" class="quantity-number">0</span>
-        <button type="button" onclick="changeQuantity('Gruyere Cheese & Onions', 1)">+</button>
-      </div>
-    </div>
-
-    <div class="quantity-controls">
-      <span class="flavor-label">Spicy Corn</span>
-      <div class="button-group">
-        <button type="button" onclick="changeQuantity('Spicy Corn', -1)">−</button>
-        <span id="Spicy Corn-count" class="quantity-number">0</span>
-        <button type="button" onclick="changeQuantity('Spicy Corn', 1)">+</button>
-      </div>
-    </div>
-
-    <div class="quantity-controls">
-      <span class="flavor-label">Spinach & Feta</span>
-      <div class="button-group">
-        <button type="button" onclick="changeQuantity('Spinach & Feta', -1)">−</button>
-        <span id="Spinach & Feta-count" class="quantity-number">0</span>
-        <button type="button" onclick="changeQuantity('Spinach & Feta', 1)">+</button>
-      </div>
+<div class="budget-control">
+  {% for flavor in ["Beyond Beef", "Mushrooms & Leeks", "Gruyere Cheese & Onions", "Spicy Corn", "Spinach & Feta"] %}
+  <div class="flavor-row">
+    <span class="flavor-name">{{ flavor }}</span>
+    <div class="quantity-buttons">
+      <button type="button" onclick="modifyItem('{{ flavor }}', -1)">−</button>
+      <span id="count-{{ flavor }}">0</span>
+      <button type="button" onclick="modifyItem('{{ flavor }}', 1)">+</button>
     </div>
   </div>
-
-  <button type="button" onclick="addSelectedItems()" class="budget-add-btn">Add Selected to Budget</button>
-</form>
+  {% endfor %}
+</div>
 
 <table id="budget-table">
   <thead>
@@ -77,27 +39,17 @@
 <script>
 const unitPrice = 1.5;
 let budgetItems = [];
-const quantities = {
-  "Beyond Beef": 0,
-  "Mushrooms & Leeks": 0,
-  "Gruyere Cheese & Onions": 0,
-  "Spicy Corn": 0,
-  "Spinach & Feta": 0
-};
 
-function changeQuantity(flavor, change) {
-  quantities[flavor] = Math.max(0, quantities[flavor] + change);
-  document.getElementById(`${flavor}-count`).textContent = quantities[flavor];
-}
-
-function addSelectedItems() {
-  for (const flavor in quantities) {
-    const quantity = quantities[flavor];
-    if (quantity > 0) {
-      const subtotal = unitPrice * quantity;
-      budgetItems.push({ flavor, quantity, subtotal });
-      quantities[flavor] = 0;
-      document.getElementById(`${flavor}-count`).textContent = 0;
+function modifyItem(flavor, delta) {
+  let item = budgetItems.find(i => i.flavor === flavor);
+  if (!item && delta > 0) {
+    budgetItems.push({ flavor, quantity: 1, subtotal: unitPrice });
+  } else if (item) {
+    item.quantity += delta;
+    if (item.quantity <= 0) {
+      budgetItems = budgetItems.filter(i => i.flavor !== flavor);
+    } else {
+      item.subtotal = item.quantity * unitPrice;
     }
   }
   updateTable();
@@ -113,6 +65,7 @@ function updateTable() {
   tbody.innerHTML = '';
   let total = 0;
   budgetItems.forEach((item, index) => {
+    document.getElementById(`count-${item.flavor}`).textContent = item.quantity;
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${item.flavor}</td>
@@ -124,6 +77,13 @@ function updateTable() {
     total += item.subtotal;
   });
   document.getElementById('total').textContent = total.toFixed(2);
+  // Clear counts for removed items
+  const allFlavors = ["Beyond Beef", "Mushrooms & Leeks", "Gruyere Cheese & Onions", "Spicy Corn", "Spinach & Feta"];
+  allFlavors.forEach(f => {
+    if (!budgetItems.find(i => i.flavor === f)) {
+      document.getElementById(`count-${f}`).textContent = '0';
+    }
+  });
 }
 
 function downloadCSV() {
