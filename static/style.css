@@ -144,7 +144,7 @@ canvas {
 
 .home-centered {
     text-align: center;
-    max-width: 1200px;
+    max-width: 1800px;
     margin: 0 auto;
     padding: 30px 20px;
 }
@@ -267,7 +267,7 @@ canvas {
 }
 
 .banner-container {
-  margin-top: 60px;
+  margin-top: 30px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -281,5 +281,5 @@ canvas {
   max-width: 1440px;
   object-fit: cover;
   border-radius: 0;
-  height: 240px;
+  height: 260px;
 }
