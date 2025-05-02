@@ -1,21 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="hero-banner">
-  <img src="{{ url_for('static', filename='images/home/combined_banner_clear.jpg') }}" class="hero-image" alt="Empanadas Banner">
-  <div class="hero-text">
+<div class="home-centered">
     <h1>Locally made with seasonal ingredients and a lot of love</h1>
     <p>Find us at your favorite markets and events!</p>
-    <a href="/votar" class="cta-button">Vote for Your Favorite 🥟</a>
-  </div>
+
+    <a href="https://www.instagram.com/eves_empanadas?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="home-link" target="_blank">
+        📸 Follow us on Instagram
+    </a>
+
+    <hr class="decorative-line">
+
+    <div class="banner-container">
+        <img src="{{ url_for('static', filename='images/home/combined_banner_clear.jpg') }}" class="home-banner" alt="Banner">
+    </div>
 </div>
 
-<section class="home-section">
-  <div class="home-message">
-    <h2>Made for Empanada Lovers</h2>
-    <p>Join our community and help shape the menu by voting for your favorite empanada flavor.</p>
-    <a href="/presupuesto" class="secondary-button">Build Your Budget</a>
-  </div>
-</section>
-
 {% endblock %}
+
