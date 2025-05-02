@@ -281,7 +281,7 @@ canvas {
   /* max-width: 1440px;  */
   /* object-fit: cover; */
   /* border-radius: 0; */
-  height: auto;
+  height: 300;
   display: block;
 }
 
