@@ -9,6 +9,12 @@ app.secret_key = "clave-supersecreta"
 GASTOS_PASSWORD = "admin123"
 DB_PATH = os.path.join(os.path.dirname(__file__), 'empanadas.db')
 
+
+# Presupuestador logic
+@app.route('/presupuesto')
+def presupuesto():
+    return render_template('presupuesto.html')
+
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -194,3 +200,4 @@ def delete_expense():
 
 if __name__ == '__main__':
     app.run(debug=True)
+

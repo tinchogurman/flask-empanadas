@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="section-title">Empanada Budget Builder</h1>
+
+<form id="budget-form">
+  <label for="flavor">Flavor:</label>
+  <select id="flavor">
+    <option value="Beyond Beef">Beyond Beef</option>
+    <option value="Mushrooms & Leeks">Mushrooms & Leeks</option>
+    <option value="Gruyere Cheese & Onions">Gruyere Cheese & Onions</option>
+    <option value="Spicy Corn">Spicy Corn</option>
+    <option value="Spinach & Feta">Spinach & Feta</option>
+  </select>
+
+  <label for="size">Quantity:</label>
+  <select id="size">
+    <option value="1">1 Unit ($1.50)</option>
+    <option value="6">½ Dozen ($8.00)</option>
+    <option value="12">1 Dozen ($15.00)</option>
+  </select>
+
+  <button type="button" onclick="addItem()">Add to Budget</button>
+</form>
+
+<table id="budget-table">
+  <thead>
+    <tr>
+      <th>Flavor</th>
+      <th>Quantity</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<h3>Total: $<span id="total">0.00</span></h3>
+
+<a href="#" id="download-csv" class="home-button" onclick="downloadCSV()">Download CSV</a>
+
+<script>
+const prices = {1: 1.5, 6: 8, 12: 15};
+const budgetItems = [];
+
+function addItem() {
+  const flavor = document.getElementById('flavor').value;
+  const size = parseInt(document.getElementById('size').value);
+  const subtotal = prices[size];
+  budgetItems.push({ flavor, size, subtotal });
+  updateTable();
+}
+
+function updateTable() {
+  const tbody = document.querySelector('#budget-table tbody');
+  tbody.innerHTML = '';
+  let total = 0;
+  budgetItems.forEach(item => {
+    const row = document.createElement('tr');
+    row.innerHTML = `<td>${item.flavor}</td><td>${item.size}</td><td>$${item.subtotal.toFixed(2)}</td>`;
+    tbody.appendChild(row);
+    total += item.subtotal;
+  });
+  document.getElementById('total').textContent = total.toFixed(2);
+}
+
+function downloadCSV() {
+  let csv = 'Flavor,Quantity,Subtotal\n';
+  budgetItems.forEach(item => {
+    csv += `${item.flavor},${item.size},$${item.subtotal.toFixed(2)}\n`;
+  });
+  csv += `,,Total: $${document.getElementById('total').textContent}`;
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'empanada_budget.csv';
+  link.click();
+}
+</script>
+
+{% endblock %}
