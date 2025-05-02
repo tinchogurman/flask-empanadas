@@ -246,3 +246,34 @@ canvas {
 .delete-button:hover {
     transform: scale(1.2);
 }
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  justify-content: center;
+}
+
+.quantity-controls button {
+  background-color: #014aad;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.quantity-controls button:hover {
+  background-color: #2b6ee8;
+}
+
+.quantity-number {
+  font-size: 18px;
+  min-width: 30px;
+  text-align: center;
+  font-weight: bold;
+  color: #014aad;
+}

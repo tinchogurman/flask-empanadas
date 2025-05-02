@@ -5,24 +5,43 @@
   <h1 class="section-title">Create your own budget!</h1>
 </div>
 
-<form id="budget-form">
-  <label for="flavor">Flavor:</label>
-  <select id="flavor">
-    <option value="Beyond Beef">Beyond Beef</option>
-    <option value="Mushrooms & Leeks">Mushrooms & Leeks</option>
-    <option value="Gruyere Cheese & Onions">Gruyere Cheese & Onions</option>
-    <option value="Spicy Corn">Spicy Corn</option>
-    <option value="Spinach & Feta">Spinach & Feta</option>
-  </select>
+<form id="budget-form" style="text-align: center;">
+  <div class="quantity-controls">
+    <span>Beyond Beef</span>
+    <button type="button" onclick="changeQuantity('Beyond Beef', -1)">−</button>
+    <span id="Beyond Beef-count" class="quantity-number">0</span>
+    <button type="button" onclick="changeQuantity('Beyond Beef', 1)">+</button>
+  </div>
 
-  <label for="size">Quantity:</label>
-  <select id="size">
-    <option value="1">1 Unit ($1.50)</option>
-    <option value="6">½ Dozen ($8.00)</option>
-    <option value="12">1 Dozen ($15.00)</option>
-  </select>
+  <div class="quantity-controls">
+    <span>Mushrooms & Leeks</span>
+    <button type="button" onclick="changeQuantity('Mushrooms & Leeks', -1)">−</button>
+    <span id="Mushrooms & Leeks-count" class="quantity-number">0</span>
+    <button type="button" onclick="changeQuantity('Mushrooms & Leeks', 1)">+</button>
+  </div>
 
-  <button type="button" onclick="addItem()">Add to Budget</button>
+  <div class="quantity-controls">
+    <span>Gruyere Cheese & Onions</span>
+    <button type="button" onclick="changeQuantity('Gruyere Cheese & Onions', -1)">−</button>
+    <span id="Gruyere Cheese & Onions-count" class="quantity-number">0</span>
+    <button type="button" onclick="changeQuantity('Gruyere Cheese & Onions', 1)">+</button>
+  </div>
+
+  <div class="quantity-controls">
+    <span>Spicy Corn</span>
+    <button type="button" onclick="changeQuantity('Spicy Corn', -1)">−</button>
+    <span id="Spicy Corn-count" class="quantity-number">0</span>
+    <button type="button" onclick="changeQuantity('Spicy Corn', 1)">+</button>
+  </div>
+
+  <div class="quantity-controls">
+    <span>Spinach & Feta</span>
+    <button type="button" onclick="changeQuantity('Spinach & Feta', -1)">−</button>
+    <span id="Spinach & Feta-count" class="quantity-number">0</span>
+    <button type="button" onclick="changeQuantity('Spinach & Feta', 1)">+</button>
+  </div>
+
+  <button type="button" onclick="addSelectedItems()" style="margin-top: 20px;">Add Selected to Budget</button>
 </form>
 
 <table id="budget-table">
@@ -44,14 +63,31 @@
 </div>
 
 <script>
-const prices = {1: 1.5, 6: 8, 12: 15};
+const unitPrice = 1.5;
 let budgetItems = [];
+const quantities = {
+  "Beyond Beef": 0,
+  "Mushrooms & Leeks": 0,
+  "Gruyere Cheese & Onions": 0,
+  "Spicy Corn": 0,
+  "Spinach & Feta": 0
+};
 
-function addItem() {
-  const flavor = document.getElementById('flavor').value;
-  const size = parseInt(document.getElementById('size').value);
-  const subtotal = prices[size];
-  budgetItems.push({ flavor, size, subtotal });
+function changeQuantity(flavor, change) {
+  quantities[flavor] = Math.max(0, quantities[flavor] + change);
+  document.getElementById(`${flavor}-count`).textContent = quantities[flavor];
+}
+
+function addSelectedItems() {
+  for (const flavor in quantities) {
+    const quantity = quantities[flavor];
+    if (quantity > 0) {
+      const subtotal = unitPrice * quantity;
+      budgetItems.push({ flavor, quantity, subtotal });
+      quantities[flavor] = 0;
+      document.getElementById(`${flavor}-count`).textContent = 0;
+    }
+  }
   updateTable();
 }
 
@@ -68,7 +104,7 @@ function updateTable() {
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${item.flavor}</td>
-      <td>${item.size}</td>
+      <td>${item.quantity}</td>
       <td>$${item.subtotal.toFixed(2)}</td>
       <td><button type="button" onclick="removeItem(${index})">Delete</button></td>
     `;
@@ -81,7 +117,7 @@ function updateTable() {
 function downloadCSV() {
   let csv = 'Flavor,Quantity,Subtotal\n';
   budgetItems.forEach(item => {
-    csv += `${item.flavor},${item.size},$${item.subtotal.toFixed(2)}\n`;
+    csv += `${item.flavor},${item.quantity},$${item.subtotal.toFixed(2)}\n`;
   });
   csv += `,,Total: $${document.getElementById('total').textContent}`;
 
