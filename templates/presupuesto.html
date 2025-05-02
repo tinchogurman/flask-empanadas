@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1 class="section-title">Empanada Budget Builder</h1>
+<h1 class="section-title">Create your own budget!</h1>
 
 <form id="budget-form">
   <label for="flavor">Flavor:</label>
@@ -29,6 +29,7 @@
       <th>Flavor</th>
       <th>Quantity</th>
       <th>Subtotal</th>
+      <th>Action</th>
     </tr>
   </thead>
   <tbody></tbody>
@@ -36,11 +37,13 @@
 
 <h3>Total: $<span id="total">0.00</span></h3>
 
-<a href="#" id="download-csv" class="home-button" onclick="downloadCSV()">Download CSV</a>
+<div style="text-align: center; margin-top: 20px;">
+  <a href="#" id="download-csv" class="home-button" onclick="downloadCSV()">Download</a>
+</div>
 
 <script>
 const prices = {1: 1.5, 6: 8, 12: 15};
-const budgetItems = [];
+let budgetItems = [];
 
 function addItem() {
   const flavor = document.getElementById('flavor').value;
@@ -50,13 +53,23 @@ function addItem() {
   updateTable();
 }
 
+function removeItem(index) {
+  budgetItems.splice(index, 1);
+  updateTable();
+}
+
 function updateTable() {
   const tbody = document.querySelector('#budget-table tbody');
   tbody.innerHTML = '';
   let total = 0;
-  budgetItems.forEach(item => {
+  budgetItems.forEach((item, index) => {
     const row = document.createElement('tr');
-    row.innerHTML = `<td>${item.flavor}</td><td>${item.size}</td><td>$${item.subtotal.toFixed(2)}</td>`;
+    row.innerHTML = `
+      <td>${item.flavor}</td>
+      <td>${item.size}</td>
+      <td>$${item.subtotal.toFixed(2)}</td>
+      <td><button type="button" onclick="removeItem(${index})">Delete</button></td>
+    `;
     tbody.appendChild(row);
     total += item.subtotal;
   });
