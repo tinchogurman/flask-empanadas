@@ -278,8 +278,10 @@ canvas {
 
 .home-banner {
   width: 100%;
-  max-width: 1440px;
-  object-fit: cover;
-  border-radius: 0;
-  height: 260px;
+  /* max-width: 1440px;  */
+  /* object-fit: cover; */
+  /* border-radius: 0; */
+  height: auto;
+  display: block;
 }
+
